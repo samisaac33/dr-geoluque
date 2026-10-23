@@ -13,7 +13,7 @@ export function Services() {
         Servicios
       </h2>
       <p className="mt-2 max-w-2xl text-muted-foreground">
-        Áreas de atención. El listado final será validado por el Dr. Geo Luque
+        Áreas de atención. El listado final será validado por el Dr. Geovanny Luque
         según su práctica actual.
       </p>
       <ul className="mt-10 grid gap-4 sm:grid-cols-2">

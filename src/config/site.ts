@@ -1,25 +1,26 @@
 export const siteConfig = {
-  name: "Dr. Geo Luque",
+  name: "Dr. Geovanny Luque",
   specialty: "Ginecólogo y obstetra",
   tagline:
     "Atención integral en salud de la mujer, embarazo y acompañamiento en cada etapa.",
   description:
-    "Consulta ginecológica, control prenatal y obstetricia con un enfoque humano y basado en evidencia. Sitio oficial del Dr. Geo Luque.",
+    "Consulta ginecológica, control prenatal y obstetricia con un enfoque humano y basado en evidencia. Sitio oficial del Dr. Geovanny Luque.",
   /** URL pública del sitio (actualizar al desplegar en Vercel o dominio propio). */
   url: "https://localhost:3000",
   locale: "es_MX",
   copyrightYear: 2026,
   instagram: "https://www.instagram.com/dr.geoluque/",
   /** Teléfono visible en el sitio (formato libre). Actualizar con datos del consultorio. */
-  phoneDisplay: "Por confirmar",
+  phoneDisplay: "095 873 1324",
   /** Número para wa.me: código de país + número, sin + ni espacios. Ej. México: 52XXXXXXXXXX */
   whatsappPhoneE164: "593958731324",
   email: "",
   address: {
-    line1: "Consultorio — dirección por confirmar",
-    city: "",
-    region: "",
-    mapsUrl: "",
+    line1: "Centro Médico Los Ceibos (Av. Reales Tamarindos y Rotaria)",
+    city: "Portoviejo",
+    region: "Manabí, Ecuador",
+    mapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Centro+M%C3%A9dico+Los+Ceibos+Portoviejo",
   },
   credentials: [
     "Ginecología y obstetricia",
@@ -63,4 +64,4 @@ export function whatsappUrl(message: string): string {
 }
 
 export const whatsappAgendarMessage =
-  "Hola, Dr. Geo Luque. Me gustaría agendar una cita. ¿Qué horarios tiene disponibles?";
+  "Hola, Dr. Geovanny Luque. Me gustaría agendar una cita. ¿Qué horarios tiene disponibles?";

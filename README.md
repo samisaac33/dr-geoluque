@@ -1,6 +1,6 @@
-# Dr. Geo Luque — sitio web (Fase 0)
+# Dr. Geovanny Luque — sitio web (Fase 0)
 
-Carta de presentación y base del proyecto digital para **Dr. Geo Luque**, ginecólogo y obstetra. Instagram: [@dr.geoluque](https://www.instagram.com/dr.geoluque/).
+Carta de presentación y base del proyecto digital para **Dr. Geovanny Luque**, ginecólogo y obstetra. Instagram: [@dr.geoluque](https://www.instagram.com/dr.geoluque/).
 
 Este repositorio es el **inicio** de un producto más amplio (agenda, chatbot, correos, expediente, Google Business Profile). Ver [ROADMAP.md](./ROADMAP.md).
 
