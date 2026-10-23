@@ -13,7 +13,7 @@ export const siteConfig = {
   /** Teléfono visible en el sitio (formato libre). Actualizar con datos del consultorio. */
   phoneDisplay: "Por confirmar",
   /** Número para wa.me: código de país + número, sin + ni espacios. Ej. México: 52XXXXXXXXXX */
-  whatsappPhoneE164: "",
+  whatsappPhoneE164: "593958731324",
   email: "",
   address: {
     line1: "Consultorio — dirección por confirmar",
