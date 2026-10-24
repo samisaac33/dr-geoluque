@@ -1,4 +1,4 @@
-# Hoja de ruta — proyecto digital Dr. Geo Luque
+# Hoja de ruta — proyecto digital Dr. Geovanny Luque
 
 El sitio web actual es **Fase 0**: presencia profesional, confianza y punto de partida para un ecosistema completo del consultorio.
 
@@ -68,7 +68,7 @@ flowchart TB
 
 ---
 
-## Dependencias del Dr. Geo Luque
+## Dependencias del Dr. Geovanny Luque
 
 - Autorización de imagen, textos y datos de contacto
 - Acceso o credenciales de agenda (solo cuando inicie Fase 1)

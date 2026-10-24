@@ -17,9 +17,8 @@ export function Contact() {
         Contacto y citas
       </h2>
       <p className="mt-2 max-w-2xl text-muted-foreground">
-        Completa teléfono, WhatsApp y dirección en{" "}
-        <code className="rounded bg-muted px-1 text-xs">src/config/site.ts</code>{" "}
-        antes de publicar el sitio.
+        Consultorio en Portoviejo, Manabí. Escríbenos por WhatsApp para
+        confirmar horarios y ubicación de atención.
       </p>
       <div className="mt-10 grid gap-4 md:grid-cols-2">
         <Card>
@@ -30,10 +29,29 @@ export function Contact() {
             <p className="flex gap-2">
               <MapPin className="size-4 shrink-0 text-foreground" />
               <span>
-                {siteConfig.address.line1}
-                {siteConfig.address.city
-                  ? `, ${siteConfig.address.city}`
-                  : null}
+                {siteConfig.address.mapsUrl ? (
+                  <a
+                    href={siteConfig.address.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground hover:underline"
+                  >
+                    {siteConfig.address.line1}
+                    {siteConfig.address.city
+                      ? `, ${siteConfig.address.city}`
+                      : null}
+                    {siteConfig.address.region
+                      ? ` (${siteConfig.address.region})`
+                      : null}
+                  </a>
+                ) : (
+                  <>
+                    {siteConfig.address.line1}
+                    {siteConfig.address.city
+                      ? `, ${siteConfig.address.city}`
+                      : null}
+                  </>
+                )}
               </span>
             </p>
             <p className="flex gap-2">
