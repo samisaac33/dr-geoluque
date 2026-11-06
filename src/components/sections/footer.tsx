@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { siteConfig } from "@/config/site";
-import { Separator } from "@/components/ui/separator";
 
 export function Footer() {
   return (
@@ -29,11 +28,6 @@ export function Footer() {
             </a>
           </nav>
         </div>
-        <Separator className="my-6" />
-        <p className="text-xs text-muted-foreground">
-          Este sitio no sustituye una consulta médica. Ante urgencias, acude a
-          servicios de emergencia.
-        </p>
       </div>
     </footer>
   );

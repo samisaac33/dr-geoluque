@@ -19,13 +19,9 @@ export const siteConfig = {
     line1: "Centro Médico Los Ceibos (Av. Reales Tamarindos y Rotaria)",
     city: "Portoviejo",
     region: "Manabí, Ecuador",
-    mapsUrl:
-      "https://www.google.com/maps/search/?api=1&query=Centro+M%C3%A9dico+Los+Ceibos+Portoviejo",
+    mapsUrl: "https://maps.app.goo.gl/ygHHWJcPdve41r4MA?g_st=ic",
   },
-  credentials: [
-    "Ginecología y obstetricia",
-    "Formación y cédula profesional — por confirmar con el médico",
-  ],
+  credentials: ["Ginecología y obstetricia"],
   services: [
     {
       title: "Consulta ginecológica",

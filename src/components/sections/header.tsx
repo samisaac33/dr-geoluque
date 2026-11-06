@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { Baby } from "lucide-react";
+
 import { siteConfig } from "@/config/site";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,12 +18,20 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link
           href="/"
-          className="font-heading text-sm font-semibold tracking-tight sm:text-base"
+          className="font-heading flex min-w-0 items-center gap-2 text-sm font-semibold tracking-tight sm:gap-2.5 sm:text-base"
         >
-          {siteConfig.name}
-          <span className="text-muted-foreground hidden font-normal sm:inline">
-            {" "}
-            · {siteConfig.specialty}
+          <span
+            className="bg-primary/12 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg sm:size-10"
+            aria-hidden
+          >
+            <Baby className="size-5 sm:size-[1.35rem]" strokeWidth={1.75} />
+          </span>
+          <span className="min-w-0 leading-tight">
+            {siteConfig.name}
+            <span className="text-muted-foreground hidden font-normal sm:inline">
+              {" "}
+              · {siteConfig.specialty}
+            </span>
           </span>
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">

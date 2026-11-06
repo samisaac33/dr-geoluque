@@ -77,9 +77,8 @@ export function Contact() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Por ahora la cita se solicita por WhatsApp o Instagram. En la
-              siguiente fase del proyecto: chatbot en esta web conectado a la
-              agenda en tiempo real.
+              Escríbenos por WhatsApp para solicitar cita. Te confirmamos
+              horarios y detalles del consultorio.
             </p>
             <Button
               render={<a href={agendarHref} />}

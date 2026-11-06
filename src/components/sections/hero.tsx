@@ -1,11 +1,10 @@
-import { Calendar, ExternalLink } from "lucide-react";
+import { Calendar, MapPin } from "lucide-react";
 
 import {
   siteConfig,
   whatsappAgendarMessage,
   whatsappUrl,
 } from "@/config/site";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export function Hero() {
@@ -18,9 +17,6 @@ export function Hero() {
         aria-hidden
       />
       <div className="relative mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-24">
-        <Badge variant="secondary" className="mb-4">
-          Fase 0 · Carta de presentación
-        </Badge>
         <h1 className="font-heading max-w-2xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
           {siteConfig.name}
         </h1>
@@ -38,7 +34,7 @@ export function Hero() {
           <Button
             render={
               <a
-                href={siteConfig.instagram}
+                href={siteConfig.address.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               />
@@ -47,14 +43,10 @@ export function Hero() {
             variant="outline"
             size="lg"
           >
-            <ExternalLink data-icon="inline-start" />
-            Instagram
+            <MapPin data-icon="inline-start" />
+            Ubicación
           </Button>
         </div>
-        <p className="mt-4 text-xs text-muted-foreground">
-          Próximamente: agendamiento con chatbot sincronizado con la agenda del
-          consultorio.
-        </p>
       </div>
     </section>
   );

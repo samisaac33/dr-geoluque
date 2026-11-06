@@ -45,7 +45,7 @@ export default function AvisoPrivacidadPage() {
           <p>
             Este documento será sustituido por un aviso de privacidad integral
             redactado o validado por el médico y, si aplica, por asesoría legal
-            antes de activar formularios, chatbot o base de datos de pacientes.
+            antes de activar formularios o bases de datos de pacientes.
           </p>
         </div>
         <p className="mt-10">

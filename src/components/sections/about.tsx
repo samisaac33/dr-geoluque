@@ -14,16 +14,8 @@ export function About() {
           Sobre mí
         </h2>
         <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
-          {siteConfig.description} Sigue{" "}
-          <a
-            href={siteConfig.instagram}
-            className="text-foreground underline-offset-4 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            @dr.geoluque
-          </a>{" "}
-          en Instagram para contenido educativo y novedades del consultorio.
+          {siteConfig.description} Puedes agendar cita por WhatsApp o revisar la
+          sección de contacto en este sitio.
         </p>
         <Separator className="my-8" />
         <h3 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">

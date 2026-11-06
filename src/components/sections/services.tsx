@@ -13,8 +13,7 @@ export function Services() {
         Servicios
       </h2>
       <p className="mt-2 max-w-2xl text-muted-foreground">
-        Áreas de atención. El listado final será validado por el Dr. Geovanny Luque
-        según su práctica actual.
+        Consulta ginecológica, obstetricia y acompañamiento en salud de la mujer.
       </p>
       <ul className="mt-10 grid gap-4 sm:grid-cols-2">
         {siteConfig.services.map((service) => (
