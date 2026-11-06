@@ -12,16 +12,17 @@ export function Contact() {
   const agendarHref = whatsappUrl(whatsappAgendarMessage);
 
   return (
-    <section id="contacto" className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
-      <h2 className="font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
-        Contacto y citas
-      </h2>
-      <p className="mt-2 max-w-2xl text-muted-foreground">
-        Consultorio en Portoviejo, Manabí. Escríbenos por WhatsApp para
-        confirmar horarios y ubicación de atención.
+    <section id="contacto" className="section-shell pb-24 pt-16 sm:pb-28 sm:pt-20">
+      <p className="text-primary text-xs font-semibold uppercase tracking-[0.18em]">
+        Reserva
       </p>
-      <div className="mt-10 grid gap-4 md:grid-cols-2">
-        <Card>
+      <h2 className="section-title mt-1">Contacto y citas</h2>
+      <p className="section-lead mt-1">
+        Consultorio en Portoviejo, Manabí. Escríbenos por WhatsApp para confirmar
+        horarios y ubicación de atención.
+      </p>
+      <div className="mt-12 grid gap-5 md:grid-cols-2">
+        <Card className="border-border/60 bg-card/85 shadow-md backdrop-blur-sm transition-shadow duration-300 hover:shadow-lg">
           <CardHeader>
             <CardTitle className="text-base">Consultorio</CardTitle>
           </CardHeader>
@@ -34,7 +35,7 @@ export function Contact() {
                     href={siteConfig.address.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-foreground hover:underline"
+                    className="text-foreground underline-offset-4 transition-colors hover:text-primary hover:underline"
                   >
                     {siteConfig.address.line1}
                     {siteConfig.address.city
@@ -71,7 +72,7 @@ export function Contact() {
             ) : null}
           </CardContent>
         </Card>
-        <Card className="flex flex-col justify-between">
+        <Card className="border-primary/12 from-primary/[0.06] via-card/90 flex flex-col justify-between border bg-linear-to-br to-card/95 shadow-lg shadow-primary/[0.07] backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-base">Agendar</CardTitle>
           </CardHeader>
@@ -83,7 +84,7 @@ export function Contact() {
             <Button
               render={<a href={agendarHref} />}
               nativeButton={false}
-              className="w-full sm:w-auto"
+              className="hover:shadow-primary/30 w-full rounded-xl shadow-md transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 sm:w-auto"
               size="lg"
             >
               Solicitar cita

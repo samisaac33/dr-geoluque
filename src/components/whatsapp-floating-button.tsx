@@ -25,7 +25,7 @@ export function WhatsAppFloatingButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribir por WhatsApp para agendar una cita"
-      className="fixed bottom-5 right-5 z-50 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] sm:bottom-6 sm:right-6"
+      className="fixed bottom-5 right-5 z-50 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_4px_24px_-2px_rgba(37,211,102,0.55)] ring-2 ring-white/25 transition-[transform,box-shadow] duration-300 hover:scale-[1.06] hover:shadow-[0_8px_32px_-4px_rgba(37,211,102,0.65)] active:scale-95 motion-reduce:transition-none motion-reduce:hover:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] sm:bottom-6 sm:right-6"
     >
       <WhatsAppIcon className="size-7" />
     </a>

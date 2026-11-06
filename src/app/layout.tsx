@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 
+import { SiteBackground } from "@/components/site-background";
 import { WhatsAppFloatingButton } from "@/components/whatsapp-floating-button";
 import { siteConfig } from "@/config/site";
 
@@ -14,6 +15,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  axes: ["SOFT", "WONK", "opsz"],
 });
 
 const siteTitle = `${siteConfig.name} | ${siteConfig.specialty}`;
@@ -58,7 +65,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
       <head>
         <script
@@ -68,7 +75,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
       </head>
-      <body className="flex min-h-full flex-col">
+      <body className="relative flex min-h-full flex-col">
+        <SiteBackground />
         {children}
         <WhatsAppFloatingButton />
       </body>
