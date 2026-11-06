@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Calendar, MapPin } from "lucide-react";
 
 import {
@@ -12,10 +13,23 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden border-b border-border/60">
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,oklch(0.92_0.04_350),transparent)]"
-        aria-hidden
-      />
+      <div className="pointer-events-none absolute inset-0" aria-hidden>
+        <div className="relative h-full min-h-[22rem] w-full sm:min-h-[26rem]">
+          <Image
+            src="/hero-dr-geoluque.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[center_22%] opacity-[0.32]"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/88 to-background/45" />
+        <div
+          className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,oklch(0.92_0.04_350_/_0.55),transparent)]"
+          aria-hidden
+        />
+      </div>
       <div className="relative mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-24">
         <h1 className="font-heading max-w-2xl text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
           {siteConfig.name}
