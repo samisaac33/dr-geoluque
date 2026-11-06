@@ -3,8 +3,6 @@ import Link from "next/link";
 import { Baby } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 const nav = [
   { href: "#servicios", label: "Servicios" },
@@ -45,15 +43,6 @@ export function Header() {
             </a>
           ))}
         </nav>
-        <a
-          href="#contacto"
-          className={cn(
-            buttonVariants({ size: "sm" }),
-            "shrink-0 rounded-xl shadow-primary/15 hover:shadow-primary/25 shadow-sm transition-[transform,box-shadow] duration-200 hover:-translate-y-px",
-          )}
-        >
-          Agendar cita
-        </a>
       </div>
     </header>
   );
