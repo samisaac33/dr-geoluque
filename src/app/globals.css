@@ -164,7 +164,7 @@
     transform: scale(1.03);
   }
   to {
-    opacity: 0.34;
+    opacity: 0.48;
     transform: scale(1);
   }
 }
@@ -213,7 +213,7 @@
     }
     .hero-image-enter {
       animation: none;
-      opacity: 0.34;
+      opacity: 0.48;
     }
     .hero-content-enter {
       animation: none;

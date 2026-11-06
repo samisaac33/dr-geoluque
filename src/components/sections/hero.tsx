@@ -21,7 +21,7 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            className="hero-image-enter object-cover object-[center_22%] opacity-[0.34]"
+            className="hero-image-enter object-cover object-[center_22%] opacity-[0.48]"
           />
         </div>
         <div className="from-background via-background/86 absolute inset-0 bg-gradient-to-br to-primary/[0.06]" />
