@@ -21,7 +21,7 @@ export const siteConfig = {
     region: "Manabí, Ecuador",
     mapsUrl: "https://maps.app.goo.gl/ygHHWJcPdve41r4MA?g_st=ic",
   },
-  credentials: ["Ginecología y obstetricia"],
+  credentials: ["Gineco-Obstetra"],
   services: [
     {
       title: "Consulta ginecológica",

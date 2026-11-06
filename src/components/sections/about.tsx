@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Check } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
@@ -14,14 +15,32 @@ export function About() {
         aria-hidden
       />
       <div className="section-shell relative">
-        <p className="text-primary text-xs font-semibold uppercase tracking-[0.18em]">
-          Confianza
-        </p>
-        <h2 className="section-title mt-1">Sobre mí</h2>
-        <p className="section-lead mt-2 max-w-2xl">
-          {siteConfig.description} Puedes agendar cita por WhatsApp o revisar la
-          sección de contacto en este sitio.
-        </p>
+        <div className="grid items-start gap-10 md:grid-cols-2 md:gap-12 lg:gap-14">
+          <div>
+            <p className="text-primary text-xs font-semibold uppercase tracking-[0.18em]">
+              Confianza
+            </p>
+            <h2 className="section-title mt-1">Sobre mí</h2>
+            <p className="section-lead mt-2 max-w-2xl md:max-w-none">
+              {siteConfig.description} Puedes agendar cita por WhatsApp o
+              revisar la sección de contacto en este sitio.
+            </p>
+          </div>
+          <figure className="mx-auto w-full max-w-md md:order-none md:mx-0 md:max-w-none md:justify-self-end">
+            <div className="ring-primary/12 relative aspect-[4/5] overflow-hidden rounded-2xl shadow-xl shadow-primary/[0.08] ring-1">
+              <Image
+                src="/hero-dr-geoluque.jpg"
+                alt={`${siteConfig.name}, ${siteConfig.specialty}`}
+                fill
+                sizes="(min-width: 768px) 38vw, 100vw"
+                className="object-cover object-[center_22%]"
+              />
+            </div>
+            <figcaption className="text-muted-foreground mt-3 text-center text-xs md:text-left">
+              {siteConfig.name}
+            </figcaption>
+          </figure>
+        </div>
         <Separator className="my-10 max-w-md bg-gradient-to-r from-primary/25 via-border to-transparent" />
         <h3 className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.15em]">
           Formación y credenciales
