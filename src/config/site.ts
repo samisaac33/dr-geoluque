@@ -21,7 +21,6 @@ export const siteConfig = {
     region: "Manabí, Ecuador",
     mapsUrl: "https://maps.app.goo.gl/ygHHWJcPdve41r4MA?g_st=ic",
   },
-  credentials: ["Gineco-Obstetra"],
   services: [
     {
       title: "Consulta ginecológica",
@@ -43,11 +42,6 @@ export const siteConfig = {
       description:
         "Apoyo en recuperación posparto, lactancia materna y signos de alarma a vigilar.",
     },
-  ],
-  trustPoints: [
-    "Comunicación clara y respetuosa",
-    "Enfoque en evidencia médica",
-    "Acompañamiento en decisiones informadas",
   ],
 } as const;
 
