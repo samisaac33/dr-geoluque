@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "Dr. Geovanny Luque",
-  specialty: "Ginecólogo y obstetra",
+  specialty: "Gineco-Obstetra",
   tagline:
     "Atención integral en salud de la mujer, embarazo y acompañamiento en cada etapa.",
   description:
