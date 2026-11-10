@@ -26,7 +26,7 @@ export function Hero() {
         </div>
         <div className="from-background via-background/86 absolute inset-0 bg-gradient-to-br to-primary/[0.06]" />
         <div
-          className="animate-hero-gradient motion-reduce:animate-none absolute inset-0 bg-[length:220%_220%] bg-[linear-gradient(125deg,oklch(0.97_0.035_350_/_0.55)_0%,transparent_38%,oklch(0.95_0.04_320_/_0.35)_55%,transparent_75%)] opacity-80"
+          className="animate-hero-gradient motion-reduce:animate-none absolute inset-0 bg-[length:220%_220%] bg-[linear-gradient(125deg,oklch(0.96_0.09_350_/_0.62)_0%,transparent_36%,oklch(0.94_0.12_320_/_0.42)_52%,transparent_74%,oklch(0.38_0.14_350_/_0.12)_100%)] opacity-85"
         />
         <div
           className="absolute inset-0 bg-[radial-gradient(ellipse_90%_70%_at_18%_88%,oklch(0.98_0_0_/_0.85),transparent_58%)]"
