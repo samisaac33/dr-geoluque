@@ -9,7 +9,7 @@ export function About() {
       className="relative overflow-hidden border-y border-border/50 bg-linear-to-b from-primary/[0.04] via-muted/40 to-background py-20 sm:py-24"
     >
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_100%_20%,oklch(0.97_0.04_350_/_0.5),transparent)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_100%_20%,oklch(0.96_0.1_350_/_0.55),transparent)]"
         aria-hidden
       />
       <div className="section-shell relative">
