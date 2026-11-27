@@ -1,24 +1,10 @@
 import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 
-function blobReadWriteToken(): string | undefined {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    return process.env.BLOB_READ_WRITE_TOKEN;
-  }
-  for (const [key, value] of Object.entries(process.env)) {
-    if (
-      key.startsWith("BLOB_READ_WRITE_TOKEN") &&
-      typeof value === "string" &&
-      value.length > 0
-    ) {
-      return value;
-    }
-  }
-  return undefined;
-}
+import { resolveBlobReadWriteToken } from "@/lib/reveal/blob-read-write-token";
 
 export async function POST(request: Request) {
-  const token = blobReadWriteToken();
+  const token = resolveBlobReadWriteToken();
   if (!token) {
     return Response.json(
       {
