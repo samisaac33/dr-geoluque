@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CLINICAL_BRAND } from "@/lib/reveal/clinical-brand";
+import { ultrasoundForToken } from "@/lib/reveal/blob-token";
 import {
   fileToPreviewUrl,
   prepareUltrasoundFile,
@@ -75,6 +76,11 @@ function genderHeadline(gender: RevealGender) {
   return gender === "boy" ? "Es un niño" : "Es una niña";
 }
 
+function shortenLinkForDisplay(url: string): string {
+  if (url.length <= 64) return url;
+  return `${url.slice(0, 36)}…${url.slice(-20)}`;
+}
+
 export function RevealGenderRegister({
   onSaved,
   onCancel,
@@ -97,7 +103,6 @@ export function RevealGenderRegister({
   );
   const [ultrasoundError, setUltrasoundError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [shortUrlNote, setShortUrlNote] = useState<string | null>(null);
   const previewUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -167,7 +172,7 @@ export function RevealGenderRegister({
   }, [includeChildren, childNames]);
 
   const persistChoice = useCallback(
-    (ultrasoundUrl: string): string | null => {
+    (ultrasoundUrl?: string): string | null => {
     if (!gender) return null;
     const labels = buildLabels();
     if (includeChildren && labels.children.length === 0) {
@@ -176,7 +181,7 @@ export function RevealGenderRegister({
     const token = encodeRevealToken({
       gender,
       doctorPhrase: doctorPhrase.trim() || undefined,
-      ultrasoundUrl,
+      ultrasoundUrl: ultrasoundUrl?.trim() || undefined,
       labels,
     });
     const path = `/reveal?k=${token}`;
@@ -203,21 +208,31 @@ export function RevealGenderRegister({
     setModal("confirm");
   };
 
+  const copyCeremonyLinkAfter = useCallback(async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      /* portapapeles no disponible */
+    }
+  }, []);
+
   const confirmAndSave = async () => {
-    if (!gender || !ultrasoundBlob) return;
+    if (!gender) return;
+    if (ultrasoundRequired && !ultrasoundBlob) return;
     setSaving(true);
     setUltrasoundError(null);
     try {
-      const { url, embeddedInToken } =
-        await uploadUltrasoundForCeremony(ultrasoundBlob);
-      const fullUrl = persistChoice(url);
+      let ultrasoundUrl: string | undefined;
+      if (ultrasoundBlob) {
+        const publicUrl = await uploadUltrasoundForCeremony(ultrasoundBlob);
+        ultrasoundUrl = ultrasoundForToken(publicUrl);
+      }
+      const fullUrl = persistChoice(ultrasoundUrl);
       if (!fullUrl) return;
-      setShortUrlNote(
-        embeddedInToken
-          ? "La imagen va dentro del enlace (URL larga). Conecte Vercel Blob para enlaces más cortos."
-          : null,
-      );
       setModal("success");
+      void copyCeremonyLinkAfter(fullUrl);
     } catch (e) {
       setUltrasoundError(
         e instanceof Error ? e.message : "Error al guardar la ecografía.",
@@ -548,18 +563,20 @@ export function RevealGenderRegister({
                       genderHeadline(gender),
                     )}
                   </p>
-                  {shortUrlNote ? (
-                    <p className="mt-2 text-center text-xs text-amber-200/80">
-                      {shortUrlNote}
-                    </p>
-                  ) : null}
                   {ceremonyUrl ? (
                     <div className="mt-4 rounded-xl border border-white/10 bg-black/40 p-3">
                       <p className="text-[0.65rem] uppercase tracking-wider text-white/40">
                         Enlace de ceremonia
                       </p>
-                      <p className="mt-2 break-all font-mono text-[0.65rem] leading-relaxed text-emerald-200/90">
-                        {ceremonyUrl}
+                      <p
+                        className="mt-2 truncate text-sm text-emerald-200/90"
+                        title={ceremonyUrl}
+                      >
+                        {shortenLinkForDisplay(ceremonyUrl)}
+                      </p>
+                      <p className="mt-1 text-xs text-white/40">
+                        Use copiar o compartir; el enlace completo no se muestra
+                        en pantalla.
                       </p>
                       <motion.button
                         type="button"

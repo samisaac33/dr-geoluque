@@ -1,3 +1,4 @@
+import { resolveUltrasoundUrl } from "./blob-token";
 import type { RevealConfig, RevealGender } from "./types";
 import { DEFAULT_LABELS, normalizeRevealLabels } from "./types";
 
@@ -57,7 +58,7 @@ export function decodeRevealToken(token: string): RevealConfig | null {
     return {
       gender,
       doctorPhrase: parsed.dp,
-      ultrasoundUrl: parsed.us,
+      ultrasoundUrl: resolveUltrasoundUrl(parsed.us),
       labels: labelsFromTokenLb(parsed.lb),
     };
   } catch {
