@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
+import { RevealUltrasoundImage } from "@/components/reveal/RevealUltrasoundImage";
 import type { RevealConfig } from "@/lib/reveal/types";
 import { fingerprintCount, normalizeRevealLabels } from "@/lib/reveal/types";
 
@@ -62,11 +62,8 @@ export function RevealCelebration({ config }: RevealCelebrationProps) {
             isBoy ? "border-sky-500/35" : "border-pink-500/35"
           } bg-black/50`}
         >
-          <Image
-            src="/revelacion/ecografia.jpg"
-            alt="Ecografía"
-            width={640}
-            height={480}
+          <RevealUltrasoundImage
+            src={config.ultrasoundUrl}
             className="h-auto w-full object-contain"
             priority
           />

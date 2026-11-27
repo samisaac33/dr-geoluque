@@ -48,6 +48,18 @@ Antes de publicar, completa **`src/config/site.ts`**: WhatsApp (`whatsappPhoneE1
 - React 19, TypeScript, Tailwind CSS 4
 - [shadcn/ui](https://ui.shadcn.com/)
 
+## Ceremonia de revelación — ecografía por paciente
+
+En el panel `/profesional/registro-clinico` el médico **sube la ecografía** antes de generar el enlace. La imagen se aloja en **Vercel Blob** (recomendado) y la URL va dentro del enlace privado `?k=…`.
+
+Variables en Vercel (proyecto `dr-geoluque`):
+
+| Variable | Uso |
+|----------|-----|
+| `BLOB_READ_WRITE_TOKEN` | Crear un store Blob en el dashboard de Vercel y conectar el proyecto |
+
+Sin Blob, el sistema puede embeber una versión comprimida en el enlace (más largo).
+
 ## Ceremonia de revelación de sexo fetal
 
 | Ruta | Uso |

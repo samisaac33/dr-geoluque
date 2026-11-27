@@ -2,9 +2,14 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CLINICAL_BRAND } from "@/lib/reveal/clinical-brand";
+import {
+  fileToPreviewUrl,
+  prepareUltrasoundFile,
+  uploadUltrasoundForCeremony,
+} from "@/lib/reveal/prepare-ultrasound";
 import { encodeRevealToken } from "@/lib/reveal/token";
 import type { RevealGender } from "@/lib/reveal/types";
 import {
@@ -86,6 +91,48 @@ export function RevealGenderRegister({
   const [modal, setModal] = useState<ModalStep>(null);
   const [ceremonyUrl, setCeremonyUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const [ultrasoundBlob, setUltrasoundBlob] = useState<Blob | null>(null);
+  const [ultrasoundPreview, setUltrasoundPreview] = useState<string | null>(
+    null,
+  );
+  const [ultrasoundError, setUltrasoundError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [shortUrlNote, setShortUrlNote] = useState<string | null>(null);
+  const previewUrlRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
+  }, []);
+
+  const onUltrasoundFile = async (file: File | null) => {
+    setUltrasoundError(null);
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = null;
+    }
+    if (!file) {
+      setUltrasoundBlob(null);
+      setUltrasoundPreview(null);
+      return;
+    }
+    try {
+      const prepared = await prepareUltrasoundFile(file);
+      const preview = fileToPreviewUrl(prepared);
+      previewUrlRef.current = preview;
+      setUltrasoundBlob(prepared);
+      setUltrasoundPreview(preview);
+    } catch (e) {
+      setUltrasoundBlob(null);
+      setUltrasoundPreview(null);
+      setUltrasoundError(
+        e instanceof Error ? e.message : "No se pudo cargar la imagen.",
+      );
+    }
+  };
 
   const addChildField = () => {
     setChildNames((prev) =>
@@ -119,7 +166,8 @@ export function RevealGenderRegister({
     });
   }, [includeChildren, childNames]);
 
-  const persistChoice = useCallback((): string | null => {
+  const persistChoice = useCallback(
+    (ultrasoundUrl: string): string | null => {
     if (!gender) return null;
     const labels = buildLabels();
     if (includeChildren && labels.children.length === 0) {
@@ -128,6 +176,7 @@ export function RevealGenderRegister({
     const token = encodeRevealToken({
       gender,
       doctorPhrase: doctorPhrase.trim() || undefined,
+      ultrasoundUrl,
       labels,
     });
     const path = `/reveal?k=${token}`;
@@ -139,10 +188,14 @@ export function RevealGenderRegister({
     setCeremonyUrl(fullUrl);
     onSaved?.();
     return fullUrl;
-  }, [gender, doctorPhrase, buildLabels, includeChildren, onSaved]);
+  },
+  [gender, doctorPhrase, buildLabels, includeChildren, onSaved]);
+
+  const ultrasoundRequired = copyVariant === "clinical";
 
   const openConfirm = () => {
     if (!gender) return;
+    if (ultrasoundRequired && !ultrasoundBlob) return;
     if (includeChildren) {
       const names = childNames.map((n) => n.trim()).filter(Boolean);
       if (names.length === 0) return;
@@ -150,9 +203,28 @@ export function RevealGenderRegister({
     setModal("confirm");
   };
 
-  const confirmAndSave = () => {
-    if (!persistChoice()) return;
-    setModal("success");
+  const confirmAndSave = async () => {
+    if (!gender || !ultrasoundBlob) return;
+    setSaving(true);
+    setUltrasoundError(null);
+    try {
+      const { url, embeddedInToken } =
+        await uploadUltrasoundForCeremony(ultrasoundBlob);
+      const fullUrl = persistChoice(url);
+      if (!fullUrl) return;
+      setShortUrlNote(
+        embeddedInToken
+          ? "La imagen va dentro del enlace (URL larga). Conecte Vercel Blob para enlaces más cortos."
+          : null,
+      );
+      setModal("success");
+    } catch (e) {
+      setUltrasoundError(
+        e instanceof Error ? e.message : "Error al guardar la ecografía.",
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   const finishSuccess = useCallback(() => {
@@ -193,6 +265,7 @@ export function RevealGenderRegister({
 
   const childrenValid =
     !includeChildren || childNames.some((n) => n.trim().length > 0);
+  const ultrasoundValid = !ultrasoundRequired || ultrasoundBlob !== null;
 
   return (
     <>
@@ -243,6 +316,46 @@ export function RevealGenderRegister({
           >
             Es Niña
           </button>
+        </div>
+
+        <div className="mt-6">
+          <label
+            htmlFor="reveal-ultrasound"
+            className="block text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-white/40"
+          >
+            Ecografía del paciente {ultrasoundRequired ? "(requerida)" : ""}
+          </label>
+          <input
+            id="reveal-ultrasound"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/heic,image/*"
+            className="mt-2 block w-full text-sm text-white/70 file:mr-3 file:rounded-full file:border file:border-white/15 file:bg-white/10 file:px-4 file:py-2 file:text-sm file:text-white"
+            onChange={(e) => {
+              const f = e.target.files?.[0] ?? null;
+              void onUltrasoundFile(f);
+            }}
+          />
+          <p className="mt-2 text-xs text-white/35">
+            Se adjunta al enlace privado de la familia. No se guarda en historias
+            clínicas del sistema.
+          </p>
+          {ultrasoundPreview ? (
+            <motion.div
+              className="mt-3 overflow-hidden rounded-xl border border-white/15 bg-black/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={ultrasoundPreview}
+                alt="Vista previa de la ecografía"
+                className="max-h-48 w-full object-contain"
+              />
+            </motion.div>
+          ) : null}
+          {ultrasoundError ? (
+            <p className="mt-2 text-xs text-rose-300/90">{ultrasoundError}</p>
+          ) : null}
         </div>
 
         <label className="mt-6 block text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-white/40">
@@ -330,11 +443,11 @@ export function RevealGenderRegister({
 
         <button
           type="button"
-          disabled={!gender || !childrenValid}
+          disabled={!gender || !childrenValid || !ultrasoundValid || saving}
           onClick={openConfirm}
           className="mt-6 w-full rounded-full border border-white/15 bg-white/10 py-3.5 text-sm font-medium text-white disabled:opacity-40"
         >
-          {copy.submit}
+          {saving ? "Guardando ecografía…" : copy.submit}
         </button>
 
         {showCancel && onCancel ? (
@@ -404,8 +517,9 @@ export function RevealGenderRegister({
                     </button>
                     <button
                       type="button"
-                      onClick={confirmAndSave}
-                      className={`flex-1 rounded-full border py-3 text-sm font-medium ${
+                      disabled={saving}
+                      onClick={() => void confirmAndSave()}
+                      className={`flex-1 rounded-full border py-3 text-sm font-medium disabled:opacity-50 ${
                         gender === "girl"
                           ? "border-pink-400/50 bg-pink-500/20 text-pink-50"
                           : "border-sky-400/50 bg-sky-500/20 text-sky-50"
@@ -434,6 +548,11 @@ export function RevealGenderRegister({
                       genderHeadline(gender),
                     )}
                   </p>
+                  {shortUrlNote ? (
+                    <p className="mt-2 text-center text-xs text-amber-200/80">
+                      {shortUrlNote}
+                    </p>
+                  ) : null}
                   {ceremonyUrl ? (
                     <div className="mt-4 rounded-xl border border-white/10 bg-black/40 p-3">
                       <p className="text-[0.65rem] uppercase tracking-wider text-white/40">
