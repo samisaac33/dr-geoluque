@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { RevealPartyEffects } from "@/components/reveal/RevealPartyEffects";
+import { RevealUltrasoundImage } from "@/components/reveal/RevealUltrasoundImage";
 import { SpaceBackdrop } from "@/components/reveal/SpaceBackdrop";
 import { ClinicalBrandBadge } from "@/components/reveal/ClinicalBrandBadge";
 import { revealAudio } from "@/lib/reveal/audio";
@@ -266,11 +266,8 @@ export function RevealFinale({ config, onFinalReveal }: RevealFinaleProps) {
                 : { duration: 0.45, ease: "easeOut" }
             }
           >
-            <Image
-              src="/revelacion/ecografia.jpg"
-              alt="Ecografía"
-              width={960}
-              height={720}
+            <RevealUltrasoundImage
+              src={config.ultrasoundUrl}
               sizes="(min-width: 1280px) 720px, (min-width: 1024px) 560px, 100vw"
               className="h-auto max-h-[min(42vh,28rem)] w-full object-contain lg:max-h-[min(48vh,32rem)] xl:max-h-[min(52vh,36rem)]"
               priority

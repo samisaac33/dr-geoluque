@@ -10,6 +10,7 @@ export function encodeRevealToken(config: RevealConfig): string {
   const compact = {
     g: config.gender === "boy" ? "b" : "g",
     dp: config.doctorPhrase?.trim() || undefined,
+    us: config.ultrasoundUrl?.trim() || undefined,
     lb: [labels.dad, labels.mom, ...labels.children],
   };
   const json = JSON.stringify(compact);
@@ -46,6 +47,7 @@ export function decodeRevealToken(token: string): RevealConfig | null {
     const parsed = JSON.parse(json) as {
       g: "b" | "g";
       dp?: string;
+      us?: string;
       lb?: string[];
       fn?: string;
       os?: string;
@@ -55,6 +57,7 @@ export function decodeRevealToken(token: string): RevealConfig | null {
     return {
       gender,
       doctorPhrase: parsed.dp,
+      ultrasoundUrl: parsed.us,
       labels: labelsFromTokenLb(parsed.lb),
     };
   } catch {

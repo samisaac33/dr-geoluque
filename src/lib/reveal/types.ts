@@ -10,6 +10,8 @@ export interface RevealLabels {
 export interface RevealConfig {
   gender: RevealGender;
   doctorPhrase?: string;
+  /** URL pública (Blob) o data URL de respaldo en el token. */
+  ultrasoundUrl?: string;
   labels: RevealLabels;
 }
 
