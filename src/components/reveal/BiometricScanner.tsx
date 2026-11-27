@@ -45,34 +45,6 @@ interface BiometricScannerProps {
   config: RevealConfig;
 }
 
-/** Fila 2: solo hijos, centrados en la parte inferior del escáner. */
-function childPositionClass(index: number, total: number): string {
-  if (total === 1) return "bottom-1 left-1/2 -translate-x-1/2 sm:bottom-2";
-  if (total === 2) {
-    return index === 0
-      ? "bottom-1 left-[14%] sm:bottom-2 sm:left-[18%]"
-      : "bottom-1 right-[14%] sm:bottom-2 sm:right-[18%]";
-  }
-  const three = [
-    "bottom-1 left-[8%] sm:bottom-2 sm:left-[10%]",
-    "bottom-1 left-1/2 -translate-x-1/2 sm:bottom-2",
-    "bottom-1 right-[8%] sm:bottom-2 sm:right-[10%]",
-  ];
-  return three[index] ?? three[0]!;
-}
-
-/** Fila 1: Papá siempre a la izquierda. */
-function dadPositionClass(childCount: number): string {
-  const row = childCount === 0 ? "top-[26%]" : "top-[4%] sm:top-[6%]";
-  return `left-[12%] ${row} sm:left-[16%]`;
-}
-
-/** Fila 1: Mamá siempre a la derecha. */
-function momPositionClass(childCount: number): string {
-  const row = childCount === 0 ? "top-[26%]" : "top-[4%] sm:top-[6%]";
-  return `right-[12%] ${row} sm:right-[16%]`;
-}
-
 export function BiometricScanner({ config }: BiometricScannerProps) {
   const labels = useMemo(
     () => normalizeRevealLabels(config.labels ?? DEFAULT_LABELS),
@@ -82,27 +54,16 @@ export function BiometricScanner({ config }: BiometricScannerProps) {
   const totalFingerprints = fingerprintCount(labels);
 
   const sensorPlan = useMemo(() => {
-    const entries: { id: SensorId; label: string; positionClass: string }[] = [
-      {
-        id: DAD_ID,
-        label: labels.dad,
-        positionClass: dadPositionClass(childCount),
-      },
-      {
-        id: MOM_ID,
-        label: labels.mom,
-        positionClass: momPositionClass(childCount),
-      },
+    const parentRow = [
+      { id: DAD_ID, label: labels.dad },
+      { id: MOM_ID, label: labels.mom },
     ];
-    labels.children.forEach((name, index) => {
-      entries.push({
-        id: childSensorId(index),
-        label: name,
-        positionClass: childPositionClass(index, childCount),
-      });
-    });
-    return entries;
-  }, [labels, childCount]);
+    const childRow = labels.children.map((name, index) => ({
+      id: childSensorId(index),
+      label: name,
+    }));
+    return { parentRow, childRow };
+  }, [labels]);
 
   const childIds = useMemo(
     () => labels.children.map((_, i) => childSensorId(i)),
@@ -136,12 +97,12 @@ export function BiometricScanner({ config }: BiometricScannerProps) {
 
   useEffect(() => {
     const map = new Map<SensorId, Set<number>>();
-    for (const { id } of sensorPlan) {
+    for (const { id } of [...sensorPlan.parentRow, ...sensorPlan.childRow]) {
       map.set(id, new Set());
     }
     contactsPerSensor.current = map;
     const initialActive: Record<string, boolean> = {};
-    for (const { id } of sensorPlan) {
+    for (const { id } of [...sensorPlan.parentRow, ...sensorPlan.childRow]) {
       initialActive[id] = false;
     }
     setActiveSensors(initialActive);
@@ -170,7 +131,7 @@ export function BiometricScanner({ config }: BiometricScannerProps) {
 
   const syncActiveSensors = () => {
     const next: Record<string, boolean> = {};
-    for (const { id } of sensorPlan) {
+    for (const { id } of [...sensorPlan.parentRow, ...sensorPlan.childRow]) {
       next[id] = sensorActive(id);
     }
     setActiveSensors(next);
@@ -435,7 +396,17 @@ export function BiometricScanner({ config }: BiometricScannerProps) {
       ? "No suelten · Papá y Mamá deben permanecer activos"
       : `No suelten · las ${totalFingerprints} huellas deben permanecer activas`;
 
-  const allActive = sensorPlan.every(({ id }) => activeSensors[id]);
+  const allActive = [...sensorPlan.parentRow, ...sensorPlan.childRow].every(
+    ({ id }) => activeSensors[id],
+  );
+
+  const sensorHint = !isCountdown
+    ? allActive
+      ? "¡Huellas activas! Mantengan presionado…"
+      : rescueReady
+        ? "Modo rescate: Papá y Mamá pueden continuar"
+        : "Mantengan cada dedo en su sensor hasta ver el 5"
+    : null;
 
   return (
     <motion.main
@@ -486,10 +457,8 @@ export function BiometricScanner({ config }: BiometricScannerProps) {
 
           <div
             ref={scannerRef}
-            className={`relative z-10 mx-auto mt-2 touch-none select-none ${
-              childCount >= 1
-                ? "h-[min(78vw,24rem)] w-[min(95vw,30rem)] sm:h-[26rem] sm:w-[32rem] lg:h-[min(56vh,30rem)] lg:w-[min(70vh,38rem)]"
-                : "h-[min(70vw,21rem)] w-[min(92vw,27rem)] sm:h-[22rem] sm:w-[30rem] lg:h-[min(52vh,28rem)] lg:w-[min(64vh,36rem)]"
+            className={`relative z-10 mx-auto mt-2 flex w-full max-w-md touch-none flex-col justify-between touch-none select-none py-4 sm:max-w-lg ${
+              childCount >= 1 ? "min-h-[20rem] sm:min-h-[22rem]" : "min-h-[14rem]"
             }`}
             style={{
               touchAction: "none",
@@ -498,37 +467,55 @@ export function BiometricScanner({ config }: BiometricScannerProps) {
               WebkitTouchCallout: "none",
             }}
           >
-            {sensorPlan.map(({ id, label, positionClass }) => (
-              <FingerprintSensor
-                key={id}
-                id={id}
-                label={label}
-                active={Boolean(activeSensors[id])}
-                countdown={isCountdown}
-                rescueReady={rescueReady && id.startsWith("child-")}
-                positionClass={positionClass}
-                onPointerDown={capturePointer}
-                onPointerUp={releasePointer}
-                onPointerCancel={releasePointer}
-              />
-            ))}
+            <div className="flex w-full flex-row items-start justify-center gap-6 sm:gap-12">
+              {sensorPlan.parentRow.map(({ id, label }) => (
+                <FingerprintSensor
+                  key={id}
+                  inFlow
+                  id={id}
+                  label={label}
+                  active={Boolean(activeSensors[id])}
+                  countdown={isCountdown}
+                  onPointerDown={capturePointer}
+                  onPointerUp={releasePointer}
+                  onPointerCancel={releasePointer}
+                />
+              ))}
+            </div>
 
-            {!isCountdown ? (
-              <motion.p
-                className={`pointer-events-none absolute left-1/2 w-full -translate-x-1/2 text-center text-xs text-white/45 lg:text-sm xl:text-base ${
-                  childCount >= 1 ? "top-[50%]" : "top-[46%]"
+            {sensorPlan.childRow.length > 0 ? (
+              <div
+                className={`mt-auto flex w-full flex-row items-end justify-center gap-4 pt-6 sm:gap-8 ${
+                  sensorPlan.childRow.length > 1 ? "sm:justify-between sm:px-2" : ""
                 }`}
-                animate={{ opacity: [0.35, 0.75, 0.35] }}
-                transition={{ repeat: Infinity, duration: 2.2 }}
               >
-                {allActive
-                  ? "¡Huellas activas! Mantengan presionado…"
-                  : rescueReady
-                    ? "Modo rescate: Papá y Mamá pueden continuar"
-                    : `Mantengan cada dedo en su sensor hasta ver el 5`}
-              </motion.p>
+                {sensorPlan.childRow.map(({ id, label }) => (
+                  <FingerprintSensor
+                    key={id}
+                    inFlow
+                    id={id}
+                    label={label}
+                    active={Boolean(activeSensors[id])}
+                    countdown={isCountdown}
+                    rescueReady={rescueReady}
+                    onPointerDown={capturePointer}
+                    onPointerUp={releasePointer}
+                    onPointerCancel={releasePointer}
+                  />
+                ))}
+              </div>
             ) : null}
           </div>
+
+          {sensorHint ? (
+            <motion.p
+              className="relative z-10 mx-auto mt-4 max-w-md px-2 text-center text-sm leading-relaxed text-white/55 sm:text-base"
+              animate={{ opacity: [0.55, 0.95, 0.55] }}
+              transition={{ repeat: Infinity, duration: 2.2 }}
+            >
+              {sensorHint}
+            </motion.p>
+          ) : null}
 
           <AnimatePresence>
             {isCountdown ? (
@@ -552,18 +539,6 @@ export function BiometricScanner({ config }: BiometricScannerProps) {
             ) : null}
           </AnimatePresence>
 
-          <div className="mt-3 flex flex-wrap justify-center gap-3 text-[0.65rem] text-white/35 lg:mt-5 lg:gap-4 lg:text-sm">
-            {sensorPlan.map(({ id, label }) => (
-              <span
-                key={id}
-                className={
-                  activeSensors[id] ? "text-amber-200/90" : undefined
-                }
-              >
-                {label} {activeSensors[id] ? "●" : "○"}
-              </span>
-            ))}
-          </div>
         </>
       ) : null}
 

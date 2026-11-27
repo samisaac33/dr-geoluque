@@ -13,7 +13,9 @@ interface FingerprintSensorProps {
   active: boolean;
   countdown?: boolean;
   rescueReady?: boolean;
-  positionClass: string;
+  /** Si es true, el sensor participa en un flex/grid (fila 1 o 2) sin posición absoluta. */
+  inFlow?: boolean;
+  positionClass?: string;
   onPointerDown: (id: SensorId, e: ReactPointerEvent<HTMLDivElement>) => void;
   onPointerUp: (id: SensorId, e: ReactPointerEvent<HTMLDivElement>) => void;
   onPointerCancel: (id: SensorId, e: ReactPointerEvent<HTMLDivElement>) => void;
@@ -25,14 +27,19 @@ export function FingerprintSensor({
   active,
   countdown,
   rescueReady,
-  positionClass,
+  inFlow = false,
+  positionClass = "",
   onPointerDown,
   onPointerUp,
   onPointerCancel,
 }: FingerprintSensorProps) {
   return (
     <motion.div
-      className={`absolute ${positionClass} z-10 flex flex-col items-center gap-2`}
+      className={
+        inFlow
+          ? "relative z-10 flex min-w-0 flex-1 flex-col items-center gap-2"
+          : `absolute ${positionClass} z-10 flex flex-col items-center gap-2`
+      }
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
