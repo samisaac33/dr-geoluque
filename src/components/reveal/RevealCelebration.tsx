@@ -3,7 +3,11 @@
 import { motion } from "framer-motion";
 import { RevealUltrasoundImage } from "@/components/reveal/RevealUltrasoundImage";
 import type { RevealConfig } from "@/lib/reveal/types";
-import { fingerprintCount, normalizeRevealLabels } from "@/lib/reveal/types";
+import {
+  congratulationsPhrase,
+  fingerprintCount,
+  normalizeRevealLabels,
+} from "@/lib/reveal/types";
 
 interface RevealCelebrationProps {
   config: RevealConfig;
@@ -44,7 +48,7 @@ export function RevealCelebration({ config }: RevealCelebrationProps) {
         className="text-base font-medium text-white sm:text-lg"
         style={{ textShadow: "0 1px 6px rgba(0,0,0,0.85)" }}
       >
-        Felicidades, Papá y Mamá
+        {congratulationsPhrase(config.labels)}
       </p>
 
       <motion.div
