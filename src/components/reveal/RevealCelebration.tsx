@@ -1,7 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { RevealCeremonyPulseVisual } from "@/components/reveal/RevealCeremonyPulseVisual";
 import { RevealUltrasoundImage } from "@/components/reveal/RevealUltrasoundImage";
+import { hasRevealUltrasound } from "@/lib/reveal/ultrasound-present";
 import type { RevealConfig } from "@/lib/reveal/types";
 import {
   congratulationsPhrase,
@@ -18,6 +20,7 @@ export function RevealCelebration({ config }: RevealCelebrationProps) {
   const headline = isBoy ? "¡Es un Niño!" : "¡Es una Niña!";
   const labels = normalizeRevealLabels(config.labels);
   const count = fingerprintCount(labels);
+  const withUltrasound = hasRevealUltrasound(config);
 
   return (
     <motion.div
@@ -61,17 +64,27 @@ export function RevealCelebration({ config }: RevealCelebrationProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25, duration: 0.7 }}
       >
-        <div
-          className={`relative mx-auto mb-5 w-full overflow-hidden rounded-2xl border-2 ${
-            isBoy ? "border-sky-500/35" : "border-pink-500/35"
-          } bg-black/50`}
-        >
-          <RevealUltrasoundImage
-            src={config.ultrasoundUrl}
-            className="h-auto w-full object-contain"
-            priority
-          />
-        </div>
+        {withUltrasound ? (
+          <div
+            className={`relative mx-auto mb-5 w-full overflow-hidden rounded-2xl border-2 ${
+              isBoy ? "border-sky-500/35" : "border-pink-500/35"
+            } bg-black/50`}
+          >
+            <RevealUltrasoundImage
+              src={config.ultrasoundUrl}
+              className="h-auto w-full object-contain"
+              priority
+            />
+          </div>
+        ) : (
+          <div className="mb-5 w-full">
+            <RevealCeremonyPulseVisual
+              phase="final"
+              tint={isBoy ? "boy" : "girl"}
+              resolvedGender={isBoy ? "boy" : "girl"}
+            />
+          </div>
+        )}
 
         {config.doctorPhrase ? (
           <p className="mb-4 text-sm italic leading-relaxed text-white/90">

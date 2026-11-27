@@ -197,11 +197,8 @@ export function RevealGenderRegister({
   },
   [gender, doctorPhrase, buildLabels, includeChildren, onSaved]);
 
-  const ultrasoundRequired = copyVariant === "clinical";
-
   const openConfirm = () => {
     if (!gender) return;
-    if (ultrasoundRequired && !ultrasoundBlob) return;
     if (includeChildren) {
       const names = childNames.map((n) => n.trim()).filter(Boolean);
       if (names.length === 0) return;
@@ -221,7 +218,6 @@ export function RevealGenderRegister({
 
   const confirmAndSave = async () => {
     if (!gender) return;
-    if (ultrasoundRequired && !ultrasoundBlob) return;
     setSaving(true);
     setUltrasoundError(null);
     try {
@@ -281,7 +277,7 @@ export function RevealGenderRegister({
 
   const childrenValid =
     !includeChildren || childNames.some((n) => n.trim().length > 0);
-  const ultrasoundValid = !ultrasoundRequired || ultrasoundBlob !== null;
+  const ultrasoundValid = true;
 
   return (
     <>
@@ -339,7 +335,7 @@ export function RevealGenderRegister({
             htmlFor="reveal-ultrasound"
             className="block text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-white/40"
           >
-            Ecografía del paciente {ultrasoundRequired ? "(requerida)" : ""}
+            Ecografía del paciente (opcional)
           </label>
           <input
             id="reveal-ultrasound"
