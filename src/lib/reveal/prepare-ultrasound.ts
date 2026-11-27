@@ -42,21 +42,7 @@ export function fileToPreviewUrl(file: Blob): string {
   return URL.createObjectURL(file);
 }
 
-function readBlobEnvToken(): string | undefined {
-  if (typeof process === "undefined") return undefined;
-  const env = process.env;
-  if (env.BLOB_READ_WRITE_TOKEN) return env.BLOB_READ_WRITE_TOKEN;
-  for (const [key, value] of Object.entries(env)) {
-    if (
-      key.startsWith("BLOB_READ_WRITE_TOKEN") &&
-      typeof value === "string" &&
-      value.length > 0
-    ) {
-      return value;
-    }
-  }
-  return undefined;
-}
+import { resolveBlobReadWriteToken } from "./blob-read-write-token";
 
 export async function uploadUltrasoundForCeremony(
   blob: Blob,
@@ -93,5 +79,5 @@ export async function uploadUltrasoundForCeremony(
 
 /** Solo servidor: comprobar si Blob está configurado (para logs). */
 export function hasBlobTokenOnServer(): boolean {
-  return Boolean(readBlobEnvToken());
+  return Boolean(resolveBlobReadWriteToken());
 }
