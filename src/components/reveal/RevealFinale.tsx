@@ -3,17 +3,21 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { RevealCeremonyPulseVisual } from "@/components/reveal/RevealCeremonyPulseVisual";
 import { RevealPartyEffects } from "@/components/reveal/RevealPartyEffects";
 import { RevealUltrasoundImage } from "@/components/reveal/RevealUltrasoundImage";
+import { hasRevealUltrasound } from "@/lib/reveal/ultrasound-present";
 import { SpaceBackdrop } from "@/components/reveal/SpaceBackdrop";
 import { ClinicalBrandBadge } from "@/components/reveal/ClinicalBrandBadge";
 import { revealAudio } from "@/lib/reveal/audio";
 import {
   congratulationsPhrase,
+  fingerprintCount,
+  normalizeRevealLabels,
   type RevealConfig,
 } from "@/lib/reveal/types";
 
-type FinaleStage = "ultrasound" | "tease" | "final";
+type FinaleStage = "ultrasound" | "prelude" | "tease" | "final";
 
 interface RevealFinaleProps {
   config: RevealConfig;
@@ -25,8 +29,11 @@ const TEASE_DELAYS_MS = [520, 520, 600, 680, 760, 880, 1000] as const;
 export function RevealFinale({ config, onFinalReveal }: RevealFinaleProps) {
   const isBoy = config.gender === "boy";
   const headline = isBoy ? "¡Es un Niño!" : "¡Es una Niña!";
+  const withUltrasound = hasRevealUltrasound(config);
 
-  const [stage, setStage] = useState<FinaleStage>("ultrasound");
+  const [stage, setStage] = useState<FinaleStage>(
+    withUltrasound ? "ultrasound" : "prelude",
+  );
   const [teaseTint, setTeaseTint] = useState<"boy" | "girl">("girl");
   const finalAnnounced = useCallback(
     () => onFinalReveal?.(),
@@ -36,9 +43,10 @@ export function RevealFinale({ config, onFinalReveal }: RevealFinaleProps) {
   const teaseRunId = useRef(0);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setStage("tease"), 2_600);
+    const delay = withUltrasound ? 2_600 : 2_200;
+    const t = window.setTimeout(() => setStage("tease"), delay);
     return () => clearTimeout(t);
-  }, []);
+  }, [withUltrasound]);
 
   useEffect(() => {
     if (stage !== "tease") return;
@@ -101,7 +109,7 @@ export function RevealFinale({ config, onFinalReveal }: RevealFinaleProps) {
   }, [stage, announced, finalAnnounced]);
 
   const activeTint =
-    stage === "ultrasound"
+    stage === "ultrasound" || stage === "prelude"
       ? "neutral"
       : stage === "tease"
         ? teaseTint
@@ -203,7 +211,7 @@ export function RevealFinale({ config, onFinalReveal }: RevealFinaleProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
             >
-              Imagen en tránsito
+              {withUltrasound ? "Imagen en tránsito" : "Sincronizando huellas…"}
             </motion.p>
           )}
         </AnimatePresence>
@@ -234,61 +242,83 @@ export function RevealFinale({ config, onFinalReveal }: RevealFinaleProps) {
           }}
           transition={{ duration: stage === "tease" ? 0.25 : 0.55 }}
         >
-          <motion.div
-            className={`relative mx-auto w-full overflow-hidden rounded-2xl border-2 bg-black/55 ${accent.img}`}
-            initial={{
-              opacity: 0,
-              x: "-115%",
-              y: 28,
-              rotate: -8,
-              scale: 0.72,
-            }}
-            animate={
-              stage === "ultrasound"
-                ? {
-                    opacity: 1,
-                    x: 0,
-                    y: 0,
-                    rotate: 0,
-                    scale: 1,
-                  }
-                : {
-                    opacity: 1,
-                    x: 0,
-                    y: 0,
-                    rotate: 0,
-                    scale: stage === "final" ? 1 : 0.98,
-                  }
-            }
-            transition={
-              stage === "ultrasound"
-                ? {
-                    duration: 2.2,
-                    ease: [0.16, 1, 0.3, 1],
-                  }
-                : { duration: 0.45, ease: "easeOut" }
-            }
-          >
-            <RevealUltrasoundImage
-              src={config.ultrasoundUrl}
-              sizes="(min-width: 1280px) 720px, (min-width: 1024px) 560px, 100vw"
-              className="h-auto max-h-[min(42vh,28rem)] w-full object-contain lg:max-h-[min(48vh,32rem)] xl:max-h-[min(52vh,36rem)]"
-              priority
-            />
-            {stage === "ultrasound" ? (
-              <motion.div
-                className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                initial={{ x: "-100%" }}
-                animate={{ x: "100%" }}
-                transition={{
-                  duration: 1.6,
-                  delay: 0.5,
-                  repeat: 1,
-                  ease: "easeInOut",
-                }}
+          {withUltrasound ? (
+            <motion.div
+              className={`relative mx-auto w-full overflow-hidden rounded-2xl border-2 bg-black/55 ${accent.img}`}
+              initial={{
+                opacity: 0,
+                x: "-115%",
+                y: 28,
+                rotate: -8,
+                scale: 0.72,
+              }}
+              animate={
+                stage === "ultrasound"
+                  ? {
+                      opacity: 1,
+                      x: 0,
+                      y: 0,
+                      rotate: 0,
+                      scale: 1,
+                    }
+                  : {
+                      opacity: 1,
+                      x: 0,
+                      y: 0,
+                      rotate: 0,
+                      scale: stage === "final" ? 1 : 0.98,
+                    }
+              }
+              transition={
+                stage === "ultrasound"
+                  ? {
+                      duration: 2.2,
+                      ease: [0.16, 1, 0.3, 1],
+                    }
+                  : { duration: 0.45, ease: "easeOut" }
+              }
+            >
+              <RevealUltrasoundImage
+                src={config.ultrasoundUrl}
+                sizes="(min-width: 1280px) 720px, (min-width: 1024px) 560px, 100vw"
+                className="h-auto max-h-[min(42vh,28rem)] w-full object-contain lg:max-h-[min(48vh,32rem)] xl:max-h-[min(52vh,36rem)]"
+                priority
               />
-            ) : null}
-          </motion.div>
+              {stage === "ultrasound" ? (
+                <motion.div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  initial={{ x: "-100%" }}
+                  animate={{ x: "100%" }}
+                  transition={{
+                    duration: 1.6,
+                    delay: 0.5,
+                    repeat: 1,
+                    ease: "easeInOut",
+                  }}
+                />
+              ) : null}
+            </motion.div>
+          ) : (
+            <RevealCeremonyPulseVisual
+              phase={
+                stage === "prelude"
+                  ? "prelude"
+                  : stage === "tease"
+                    ? "tease"
+                    : "final"
+              }
+              tint={
+                stage === "tease"
+                  ? teaseTint
+                  : stage === "final"
+                    ? isBoy
+                      ? "boy"
+                      : "girl"
+                    : "neutral"
+              }
+              resolvedGender={isBoy ? "boy" : "girl"}
+            />
+          )}
 
           {stage === "final" ? (
             <>
@@ -300,6 +330,17 @@ export function RevealFinale({ config, onFinalReveal }: RevealFinaleProps) {
                   transition={{ delay: 0.35 }}
                 >
                   «{config.doctorPhrase}»
+                </motion.p>
+              ) : null}
+              {!withUltrasound ? (
+                <motion.p
+                  className="mt-3 text-base font-medium text-white/95 lg:text-lg"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.38 }}
+                >
+                  {fingerprintCount(normalizeRevealLabels(config.labels))} huellas,
+                  un solo corazón
                 </motion.p>
               ) : null}
               <motion.div
