@@ -1,3 +1,8 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
+import { isCeremonyPath } from "@/components/ceremony-chrome";
 import {
   whatsappAgendarMessage,
   whatsappUrl,
@@ -17,7 +22,12 @@ function WhatsAppIcon({ className }: { className?: string }) {
 }
 
 export function WhatsAppFloatingButton() {
+  const pathname = usePathname();
   const href = whatsappUrl(whatsappAgendarMessage);
+
+  if (isCeremonyPath(pathname)) {
+    return null;
+  }
 
   return (
     <a
