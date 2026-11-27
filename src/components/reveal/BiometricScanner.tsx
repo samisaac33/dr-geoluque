@@ -45,29 +45,32 @@ interface BiometricScannerProps {
   config: RevealConfig;
 }
 
+/** Fila 2: solo hijos, centrados en la parte inferior del escáner. */
 function childPositionClass(index: number, total: number): string {
-  if (total === 1) return "bottom-2 right-[6%] sm:right-[10%]";
+  if (total === 1) return "bottom-1 left-1/2 -translate-x-1/2 sm:bottom-2";
   if (total === 2) {
     return index === 0
-      ? "bottom-2 left-1/2 -translate-x-1/2"
-      : "bottom-2 right-[6%] sm:right-[10%]";
+      ? "bottom-1 left-[14%] sm:bottom-2 sm:left-[18%]"
+      : "bottom-1 right-[14%] sm:bottom-2 sm:right-[18%]";
   }
   const three = [
-    "bottom-2 left-[10%] sm:left-[12%]",
-    "bottom-2 left-1/2 -translate-x-1/2",
-    "bottom-2 right-[10%] sm:right-[12%]",
+    "bottom-1 left-[8%] sm:bottom-2 sm:left-[10%]",
+    "bottom-1 left-1/2 -translate-x-1/2 sm:bottom-2",
+    "bottom-1 right-[8%] sm:bottom-2 sm:right-[10%]",
   ];
   return three[index] ?? three[0]!;
 }
 
+/** Fila 1: Papá siempre a la izquierda. */
 function dadPositionClass(childCount: number): string {
-  if (childCount === 0) return "left-[18%] top-[32%]";
-  return "left-1/2 top-0 -translate-x-1/2";
+  const row = childCount === 0 ? "top-[26%]" : "top-[4%] sm:top-[6%]";
+  return `left-[12%] ${row} sm:left-[16%]`;
 }
 
+/** Fila 1: Mamá siempre a la derecha. */
 function momPositionClass(childCount: number): string {
-  if (childCount === 0) return "right-[18%] top-[32%]";
-  return "bottom-2 left-[6%] sm:left-[10%]";
+  const row = childCount === 0 ? "top-[26%]" : "top-[4%] sm:top-[6%]";
+  return `right-[12%] ${row} sm:right-[16%]`;
 }
 
 export function BiometricScanner({ config }: BiometricScannerProps) {
@@ -484,7 +487,7 @@ export function BiometricScanner({ config }: BiometricScannerProps) {
           <div
             ref={scannerRef}
             className={`relative z-10 mx-auto mt-2 touch-none select-none ${
-              childCount >= 2
+              childCount >= 1
                 ? "h-[min(78vw,24rem)] w-[min(95vw,30rem)] sm:h-[26rem] sm:w-[32rem] lg:h-[min(56vh,30rem)] lg:w-[min(70vh,38rem)]"
                 : "h-[min(70vw,21rem)] w-[min(92vw,27rem)] sm:h-[22rem] sm:w-[30rem] lg:h-[min(52vh,28rem)] lg:w-[min(64vh,36rem)]"
             }`}
@@ -512,7 +515,9 @@ export function BiometricScanner({ config }: BiometricScannerProps) {
 
             {!isCountdown ? (
               <motion.p
-                className="pointer-events-none absolute left-1/2 top-[46%] w-full -translate-x-1/2 text-center text-xs text-white/45 lg:text-sm xl:text-base"
+                className={`pointer-events-none absolute left-1/2 w-full -translate-x-1/2 text-center text-xs text-white/45 lg:text-sm xl:text-base ${
+                  childCount >= 1 ? "top-[50%]" : "top-[46%]"
+                }`}
                 animate={{ opacity: [0.35, 0.75, 0.35] }}
                 transition={{ repeat: Infinity, duration: 2.2 }}
               >
