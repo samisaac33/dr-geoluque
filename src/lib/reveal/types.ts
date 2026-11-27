@@ -44,3 +44,20 @@ export function childSensorId(index: number): string {
 export function fingerprintCount(labels: RevealLabels): number {
   return 2 + labels.children.length;
 }
+
+/** Felicitación con Papá, Mamá y los hijos registrados en el enlace. */
+export function congratulationsPhrase(
+  labels?: Partial<RevealLabels> | null,
+): string {
+  const { dad, mom, children } = normalizeRevealLabels(labels);
+  const names = [dad, mom, ...children];
+  if (names.length === 2) {
+    return `¡Felicidades, ${dad} y ${mom}!`;
+  }
+  if (names.length === 3) {
+    return `¡Felicidades, ${dad}, ${mom} y ${children[0]!}!`;
+  }
+  const allButLast = names.slice(0, -1).join(", ");
+  const last = names[names.length - 1]!;
+  return `¡Felicidades, ${allButLast} y ${last}!`;
+}

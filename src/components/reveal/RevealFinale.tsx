@@ -8,7 +8,10 @@ import { RevealUltrasoundImage } from "@/components/reveal/RevealUltrasoundImage
 import { SpaceBackdrop } from "@/components/reveal/SpaceBackdrop";
 import { ClinicalBrandBadge } from "@/components/reveal/ClinicalBrandBadge";
 import { revealAudio } from "@/lib/reveal/audio";
-import type { RevealConfig } from "@/lib/reveal/types";
+import {
+  congratulationsPhrase,
+  type RevealConfig,
+} from "@/lib/reveal/types";
 
 type FinaleStage = "ultrasound" | "tease" | "final";
 
@@ -213,7 +216,7 @@ export function RevealFinale({ config, onFinalReveal }: RevealFinaleProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.5 }}
           >
-            ¡Felicidades, Papá y Mamá!
+            {congratulationsPhrase(config.labels)}
           </motion.p>
         ) : null}
 
