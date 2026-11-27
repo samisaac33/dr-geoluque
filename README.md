@@ -48,6 +48,15 @@ Antes de publicar, completa **`src/config/site.ts`**: WhatsApp (`whatsappPhoneE1
 - React 19, TypeScript, Tailwind CSS 4
 - [shadcn/ui](https://ui.shadcn.com/)
 
+## Ceremonia de revelación de sexo fetal
+
+| Ruta | Uso |
+|------|-----|
+| `/revelacion` | Atajo → inicio familiar (`/home`) |
+| `/home` | Familia: **Iniciar ceremonia** |
+| `/reveal` | Escáner (enlace con `?k=…` del médico) |
+| `/profesional/registro-clinico` | Panel oculto del médico (favoritos, sin enlazar en el sitio) |
+
 ## Despliegue (siguiente paso)
 
 1. Subir el repo a GitHub.

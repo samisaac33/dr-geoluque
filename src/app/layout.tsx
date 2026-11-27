@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
 
+import { CeremonyChromeGuard } from "@/components/ceremony-chrome";
 import { SiteBackground } from "@/components/site-background";
 import { WhatsAppFloatingButton } from "@/components/whatsapp-floating-button";
 import { siteConfig } from "@/config/site";
@@ -76,7 +77,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="relative flex min-h-full flex-col">
-        <SiteBackground />
+        <CeremonyChromeGuard>
+          <SiteBackground />
+        </CeremonyChromeGuard>
         {children}
         <WhatsAppFloatingButton />
       </body>

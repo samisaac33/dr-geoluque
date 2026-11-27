@@ -6,7 +6,7 @@ export const siteConfig = {
   description:
     "Consulta ginecológica, control prenatal y obstetricia con un enfoque humano y basado en evidencia. Sitio oficial del Dr. Geovanny Luque.",
   /** URL pública del sitio (actualizar al desplegar en Vercel o dominio propio). */
-  url: "https://localhost:3000",
+  url: "https://dr-geoluque.vercel.app",
   locale: "es_MX",
   copyrightYear: 2026,
   instagram: "https://www.instagram.com/dr.geoluque/",
