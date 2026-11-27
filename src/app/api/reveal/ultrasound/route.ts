@@ -2,6 +2,7 @@ import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 
 import { resolveBlobReadWriteToken } from "@/lib/reveal/blob-read-write-token";
+import { REVEAL_ULTRASOUND_TTL_DAYS } from "@/lib/reveal/ultrasound-storage";
 
 export async function POST(request: Request) {
   const token = resolveBlobReadWriteToken();
@@ -37,6 +38,7 @@ export async function POST(request: Request) {
     access: "public",
     contentType: "image/jpeg",
     addRandomSuffix: false,
+    ttlDays: REVEAL_ULTRASOUND_TTL_DAYS,
     token,
   });
 
