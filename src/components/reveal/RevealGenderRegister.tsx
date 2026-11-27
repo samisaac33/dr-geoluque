@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CLINICAL_BRAND } from "@/lib/reveal/clinical-brand";
+import { REVEAL_ULTRASOUND_TTL_DAYS } from "@/lib/reveal/ultrasound-storage";
 import { ultrasoundForToken } from "@/lib/reveal/blob-token";
 import {
   fileToPreviewUrl,
@@ -351,8 +352,10 @@ export function RevealGenderRegister({
             }}
           />
           <p className="mt-2 text-xs text-white/35">
-            Se adjunta al enlace privado de la familia. No se guarda en historias
-            clínicas del sistema.
+            Se adjunta al enlace privado de la familia. La imagen se conserva en
+            almacenamiento temporal {REVEAL_ULTRASOUND_TTL_DAYS} días y luego se
+            elimina automáticamente. No se guarda en historias clínicas del
+            sistema.
           </p>
           {ultrasoundPreview ? (
             <motion.div
