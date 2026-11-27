@@ -1,14 +1,30 @@
 import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
 
+function blobReadWriteToken(): string | undefined {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    return process.env.BLOB_READ_WRITE_TOKEN;
+  }
+  for (const [key, value] of Object.entries(process.env)) {
+    if (
+      key.startsWith("BLOB_READ_WRITE_TOKEN") &&
+      typeof value === "string" &&
+      value.length > 0
+    ) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
 export async function POST(request: Request) {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  const token = blobReadWriteToken();
+  if (!token) {
     return Response.json(
       {
-        error:
-          "storage_unconfigured",
+        error: "storage_unconfigured",
         message:
-          "Falta BLOB_READ_WRITE_TOKEN en el proyecto (Vercel Blob). Contacte al administrador del sitio.",
+          "Falta el token de Vercel Blob. En el proyecto: Storage → Blob → conectar, marque la casilla del token y redeploy.",
       },
       { status: 503 },
     );
@@ -35,6 +51,7 @@ export async function POST(request: Request) {
     access: "public",
     contentType: "image/jpeg",
     addRandomSuffix: false,
+    token,
   });
 
   return Response.json({ url: blob.url });

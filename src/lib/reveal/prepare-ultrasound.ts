@@ -1,6 +1,6 @@
-const MAX_EDGE = 960;
-const JPEG_QUALITY = 0.82;
-const MAX_BYTES = 1_200_000;
+const MAX_EDGE = 720;
+const JPEG_QUALITY = 0.72;
+const MAX_BYTES = 900_000;
 
 /** Redimensiona y comprime una ecografía en el navegador antes de subirla. */
 export async function prepareUltrasoundFile(file: File): Promise<Blob> {
@@ -42,53 +42,56 @@ export function fileToPreviewUrl(file: Blob): string {
   return URL.createObjectURL(file);
 }
 
-export async function blobToDataUrl(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") resolve(reader.result);
-      else reject(new Error("No se pudo leer la imagen."));
-    };
-    reader.onerror = () => reject(new Error("No se pudo leer la imagen."));
-    reader.readAsDataURL(blob);
-  });
+function readBlobEnvToken(): string | undefined {
+  if (typeof process === "undefined") return undefined;
+  const env = process.env;
+  if (env.BLOB_READ_WRITE_TOKEN) return env.BLOB_READ_WRITE_TOKEN;
+  for (const [key, value] of Object.entries(env)) {
+    if (
+      key.startsWith("BLOB_READ_WRITE_TOKEN") &&
+      typeof value === "string" &&
+      value.length > 0
+    ) {
+      return value;
+    }
+  }
+  return undefined;
 }
-
-const MAX_EMBED_TOKEN_LEN = 120_000;
 
 export async function uploadUltrasoundForCeremony(
   blob: Blob,
-): Promise<{ url: string; embeddedInToken: boolean }> {
+): Promise<string> {
   const form = new FormData();
   form.append("file", blob, "ecografia.jpg");
 
-  try {
-    const res = await fetch("/api/reveal/ultrasound", {
-      method: "POST",
-      body: form,
-    });
-    if (res.ok) {
-      const data = (await res.json()) as { url: string };
-      return { url: data.url, embeddedInToken: false };
-    }
-    if (res.status !== 503) {
-      const err = (await res.json().catch(() => null)) as {
-        message?: string;
-      } | null;
-      throw new Error(
-        err?.message ?? "No se pudo guardar la ecografía en el servidor.",
-      );
-    }
-  } catch (e) {
-    if (e instanceof Error && e.message.includes("servidor")) throw e;
-    /* red caída → respaldo en token */
+  const res = await fetch("/api/reveal/ultrasound", {
+    method: "POST",
+    body: form,
+  });
+
+  if (res.ok) {
+    const data = (await res.json()) as { url: string };
+    return data.url;
   }
 
-  const dataUrl = await blobToDataUrl(blob);
-  if (dataUrl.length > MAX_EMBED_TOKEN_LEN) {
+  const err = (await res.json().catch(() => null)) as {
+    message?: string;
+    error?: string;
+  } | null;
+
+  if (res.status === 503) {
     throw new Error(
-      "Configure Vercel Blob en el proyecto o use una imagen más pequeña.",
+      err?.message ??
+        "Almacenamiento no configurado. En Vercel: conecte Blob al proyecto, active el token de lectura/escritura y haga redeploy.",
     );
   }
-  return { url: dataUrl, embeddedInToken: true };
+
+  throw new Error(
+    err?.message ?? "No se pudo subir la ecografía. Intente de nuevo.",
+  );
+}
+
+/** Solo servidor: comprobar si Blob está configurado (para logs). */
+export function hasBlobTokenOnServer(): boolean {
+  return Boolean(readBlobEnvToken());
 }
